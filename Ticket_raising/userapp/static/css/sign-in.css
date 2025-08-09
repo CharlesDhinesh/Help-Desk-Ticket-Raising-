@@ -1,0 +1,139 @@
+/* body{
+    background-image: url('/static/assets/Sig_bg_image.png');
+} */
+
+body{
+    background-image: url('/static/assets/login-bg.jpg');
+    /* background-color: rgb(106, 2, 106); */
+    background-repeat: no-repeat;
+    background-size: cover;
+      font-family: "Advent Pro", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+   
+}
+.container {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  
+}
+.blur{
+    position: absolute;
+    top: 18%;
+    left: 35%;
+    width: 30%;
+    height: 455px;
+    /* background-image: url('/Ticket_raising/userapp/static/assets/background_img.jpg'); */
+    background-image: url('/static/assets/login-bg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: blur(8px);
+    z-index: 0;
+    border-radius: 20px;
+    padding: 10%;
+}
+form{
+    background-color: rgba(255, 255, 255, 0.286);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 30%;
+    color: rgb(58, 1, 44);
+    border-radius: 20px;
+    padding: 10%;
+    box-shadow: 0px 8px 25px rgba(255, 255, 255, 0.47);
+    font-size: 20px;
+    font-family: "Advent Pro", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+form input{
+  outline: 2px solid rgb(58, 1, 44);
+  transition-duration: 0.5s;
+}
+form input:hover{
+  box-shadow: 1px 8px 25px rgba(255, 89, 0, 0.57);
+}
+form input:focus{
+  color: rgb(58, 1, 44);
+  font-weight: 700;
+  outline: 3px solid rgb(255, 89, 0);
+}
+.sign_in_btn {
+    width: 200px;
+    margin-top: 3%;
+    margin-left: 15%;
+    padding: 8px;
+    border: none;
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(to bottom right,
+        rgb(255, 89, 0) 0%,
+        rgb(58, 1, 44) 100%,
+        rgb(255, 89, 0) 90%);
+    background-size: 200% 200%;
+    background-position: 0% 0%;
+    border-radius: 50px;
+    color: white;
+     transition: 
+        background-position 0.5s ease,
+        transform 0.4s ease,
+        box-shadow 0.4s ease;
+    cursor: pointer;
+}
+
+.sign_in_btn:hover {
+  text-shadow: 0px 4px 25px white;
+    background-position: 100% 80%;
+    transform: scale(1.05) rotate(-5deg);
+    box-shadow: 0 8px 25px rgb(58, 1, 44);
+}
+
+.sign_in_btn:active{
+  background-color: rgb(16, 16, 198);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .sign_in_btn {
+    width: 100%;
+    margin-left: 0;
+  }
+  .blur, form {
+    width: 80%;
+    height: auto;
+    padding: 8%;
+    top: 45%;
+  }
+
+  form {
+    padding: 6%;
+  }
+
+  .sign_in_btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+  }
+}
+.eye-icon{
+  position: absolute; 
+  right: 20%; 
+  top: 63.5%; 
+  transform: translateY(-50%); 
+  cursor: pointer;
+  font-size: 18px;
+}
+.eye-icon:hover{
+  color: rgb(255, 89, 0);
+}

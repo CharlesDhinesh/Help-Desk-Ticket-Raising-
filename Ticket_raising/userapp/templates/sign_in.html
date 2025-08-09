@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>HelpDesk || Sign In</title>
+   <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/png" >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Advent+Pro:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/sign-in.css'%}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body class="merienda">
+<div class="container d-flex">
+       
+   <div class="blur">
+   </div>
+      <form method="post" style="display: flex;flex-direction: column;padding: 5%;">
+          {% csrf_token %}
+           <h3 class="text-center" style="font-size: 35px;font-weight: 700;color: rgb(252, 252, 252);">
+            <img class="mb-3" src="{% static 'assets/HelpDesk_logo.png' %}" width="70" height="70" alt="">
+             <span style="color: rgb(58, 1, 44);">Sign</span> In</h3>
+         <select id="inputState" class="mb-4 p-2 border-1 rounded-2 shadow" name="role">
+            <option selected>Admin</option>
+            <option>User</option>
+            <option>Agent</option>
+         </select>
+
+         <input type="text" class=" p-2 mb-4 bg-body-tertiary rounded-2 border-0 "  name="name_id" placeholder="Admin name / Employee ID /Agent id">
+         
+         <input type="password" class=" p-2 mb-4 bg-body-tertiary rounded-2 border-0" id="passwordField" name="password" placeholder="Password">
+
+         <i class="fa-solid fa-eye eye-icon" id="togglePassword" onclick="togglePassword()"></i>
+
+
+         <button type="submit" class="sign_in_btn">Sign In</button>
+
+      </form>
+
+</div>
+
+
+
+
+
+
+{% if messages %}
+    {% for msg in messages %}
+        {% if msg.tags == 'success' %}
+       
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-success">
+              <div class="modal-header bg-success text-White">
+                <h5 class="modal-title fs-3" id="successModalLabel">Success</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body fs-4">
+                {{ msg }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        {% elif msg.tags == 'error' %}
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-danger">
+              <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="errorModalLabel fs-3">No Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body fs-4">
+                {{ msg }} 
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+
+
+
+
+<script>
+   //Message
+ document.addEventListener("DOMContentLoaded", function () {
+    const successModalEl = document.getElementById('successModal');
+    const errorModalEl = document.getElementById('errorModal');
+
+    if (successModalEl) {
+      const successModal = new bootstrap.Modal(successModalEl);
+      successModal.show();
+      setTimeout(() => successModal.hide(), 3000);
+    }
+
+    if (errorModalEl) {
+      const errorModal = new bootstrap.Modal(errorModalEl);
+      errorModal.show();
+      setTimeout(() => errorModal.hide(), 3000);
+    }
+  })
+
+
+  function togglePassword() {
+    const passwordField = document.getElementById("passwordField");
+    const icon = document.getElementById("togglePassword");
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        passwordField.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+   
+</script> 
+</body>
+</html>

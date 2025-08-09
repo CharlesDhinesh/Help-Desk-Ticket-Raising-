@@ -1,0 +1,458 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpDesk || Agent</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/png" >
+    <link rel="stylesheet" href="{% static 'css/Agent.css' %}"> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Advent+Pro:ital,wght@0,100..900;1,100..900&family=Bebas+Neue&family=Cinzel:wght@400..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Liter&family=Merienda:wght@300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&family=Smooch+Sans:wght@100..900&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
+</head>
+<body class="merienda">
+    <div class="top-bar">
+        <span class="text-start fs-5"><img class="mb-3" src="{% static 'assets/HelpDesk_logo.png' %}" width="50" height="50" alt="">
+           <a class="btn fs-3 ms-4"  data-bs-toggle="offcanvas" href="#profile-content" role="button" aria-controls="offcanvasExample">
+              <span data-bs-toggle="tooltip" data-bs-placement="right" title="Update your profile">
+                <i class="fa-solid fa-user fs-1" ></i> {{ agent.agent_name }}
+              </span>
+           </a>
+
+        </span>
+        <span style="margin-left: 30%;font-size: 50px;font-weight: 700;">HelpDesk</span>
+
+        <a href="{% url 'logout' %}" class="out-form text-decoration-none p-2">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </a>
+        
+    </div>
+  
+<!-- Sidebar -->
+<div class="d-flex " >
+  <aside  style="width: 300px; height: 605px;padding: 1%;padding-top: 4%; border-right: 2px solid orangered;border-bottom: 2px solid orangered;">
+   <ul class="nav flex-column gap-3">
+<!--     
+   <li class="nav-item mt-1" >
+    <button class="sidebar-btn-custom" style="font-size: 20px;padding: 8%;"  >
+      <i class="fa-solid fa-user"></i> Profile Management
+    </button>
+  </li> -->
+
+  <!-- Ticket Dashboard-------------------------------------------------------------------- -->
+  <li class="nav-item mt-2">
+  <button class="sidebar-btn-custom" data-target="Ticket-Dashboard" style="font-size: 22px; padding: 8%;">
+    <i class="fa-solid fa-ticket me-2" style="transform: rotate(-30deg);"></i>
+    Ticket Dashboard
+    {% if unseen_count > 0 %}
+      <span class="badge bg-danger">{{ unseen_count }}</span>
+    {% endif %}
+  </button>
+</li>
+  <!-- Create Admin ------------------------------------------------------------------- -->
+  <!-- <li class="nav-item mt-3">
+    <button class= "sidebar-btn-custom" style="font-size: 20px;padding: 8%;"  data-target="Update-Ticket">
+      <i class="fa-solid fa-wrench"></i> Update Ticket
+    </button>
+  </li> -->
+  <!-- Create agent---------------------------------------------------------------------- -->
+  <li class="nav-item mt-3"> 
+    <button class="sidebar-btn-custom" style="font-size: 22px;padding: 8%;" data-target="Ticket-history-content">
+     <i class="fa-solid fa-clock-rotate-left"></i> Ticket History
+    </button>
+  </li>
+
+  <!-- Update Agent Profile ------------------------------------------------------------------- -->
+  <li class="nav-item mt-3">
+    <button class="sidebar-btn-custom" style="font-size: 22px;padding: 8%;"  data-bs-toggle="offcanvas" href="#profile-content" role="button" aria-controls="offcanvasExample">
+      <i class="fa-solid fa-pen-to-square"></i> Update your Profile
+    </button>
+  </li>
+  <!-- Ticket Monitor ------------------------------------------------------------------- -->
+  <!-- <li class="nav-item mt-3">
+    <button class="sidebar-btn-custom" style="font-size: 22px;padding: 8%;"  data-target="Replay-tickets-content">
+      <i class="fa-solid fa-comments"></i> Reply to Tickets
+    </button>
+  </li> -->
+  <!-- Feedback ------------------------------------------------------------------------ -->
+  <!-- <li class="nav-item mt-3">
+    <button class="sidebar-btn-custom" style="font-size: 22px;padding: 8%;" data-target="feedback-content">
+      <i class="fa-solid fa-pen-nib"></i> Write Feedback
+    </button>
+  </li> -->
+</ul>
+  </aside>
+
+  <main class="flex-grow-1 p-5">         
+       
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="profile-content" aria-labelledby="offcanvasExampleLabel" style="background-color: rgb(58, 1, 44);">
+          <div class="offcanvas-header text-center">
+            <h5 class="offcanvas-title text-light fs-2" id="offcanvasExampleLabel">Profile Update</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+         </div>
+      <div class="offcanvas-body">
+        <div class="d-flex-row p-2">
+           <i class="fa-solid fa-circle-user"  style="margin-left: 100px;color: orangered;font-size: 130px;"></i>
+           <h3 class="mt-2" style="font-size: 30px; color: rgb(255, 255, 255);margin-left: 130px;">{{ agent.agent_name  }} </h3>
+        </div>
+          <form method="post" action="{% url 'profile_update_agent' agent.id %}" class="w-100">
+             {% csrf_token %}
+                      <!-- Agent Name -->
+                <div class="form-floating mb-4">
+                  <input type="text" id="agentName" name="agent_name" value="{{ agent.agent_name }}" class="form-control bg-body-tertiary rounded-2" placeholder="Agent Name" style="font-size: 18px;">
+                  <label for="agentName">Agent Name</label>
+                </div>
+
+                  <!-- Agent id -->
+                <div class="form-floating mb-4">
+                  <input type="text" id="agentid" name="agent_id" value="{{ agent.agent_id }}"  class="form-control bg-body-tertiary rounded-2" placeholder="Agent id"  data-bs-toggle="tooltip" data-bs-placement="right" title="Only Admin Can Update this field" style="font-size: 18px;" readonly>
+                  <label for="agentid">Agent ID</label>
+                </div>
+
+                <!-- Agent Email -->
+                <div class="form-floating mb-4">
+                  <input type="email" id="agentMail" name="agent_mail" value="{{ agent.agent_mail }}" class="form-control bg-body-tertiary rounded-2" placeholder="Agent Email" style="font-size: 18px;">
+                  <label for="agentMail">Agent Email</label>
+                </div>
+
+                <!-- Password -->
+                <div class="form-floating mb-4">
+                  <input type="password" id="agentPass" name="password" class="form-control bg-body-tertiary rounded-2" placeholder="Password" style="font-size: 18px;">
+                  <label for="agentPass">Password</label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="mt-2 but " style="margin-left: 7%;width: 75%;">
+                  <i class="fa-solid fa-user-plus but-icon"></i>
+                  <span class="but-name" >Update agent</span>
+                </button>
+          </form>
+      </div>
+  </div>
+
+  <div id="Ticket-Dashboard" class="content-section d-none">
+    <h3 class="text-center mt-4 mb-4" style="font-size: 40px; color: orangered;text-shadow: 2px 2px 4px orangered;">Assigned Tickets</h3>
+
+<table class="table table-bordered text-center">
+  <thead class="table-dark text-center">
+    <tr>
+      <th>S.No</th>
+      <th>Issue</th>
+      <th>Priority </th>
+      <th>Raised By</th>
+      <!-- <th>Assigned Agent</th> -->
+       <th>System no.</th>
+      <th>Category</th>
+      <th>Status</th>
+      <th>Created At</th>
+      <th>Update Status</th>
+    </tr>
+  </thead>
+  <tbody class="text-center">
+    {% for ticket in assigned_tickets %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ ticket.title }}</td>
+      <td>
+         {% if ticket.priority|lower == 'low' %}
+            <span class="badge bg-secondary ">
+              Low
+            </span>
+            {% elif ticket.priority|lower == 'medium' %}
+              <span class="badge bg-primary text-dark ">
+                Medium
+              </span>
+            {% elif ticket.priority|lower == 'high' %}
+              <span class="badge bg-warning">
+                High
+              </span>
+            {% elif ticket.priority|lower == 'urgent' %}
+              <span class="badge bg-danger">
+                Urgent
+              </span>
+            {% else %}
+              <span class="badge bg-secondary">
+                <i class="fa-solid fa-question-circle me-1"></i> {{ ticket.priority }}
+              </span>
+            {% endif %}
+      </td>
+      <td>{{ ticket.user.Emp_name }}</td>
+      <!-- <td>{{ ticket.assigned_agent.agent_name }}</td> -->
+       <td>{{ ticket.user.Sys_id }}</td>
+      <td>{{ ticket.category }}</td>
+      <td>
+        {% if ticket.status == "Open" %}
+                    <span class="badge bg-warning text-dark">Open</span>
+                {% elif ticket.status == "In Progress" %}
+                    <span class="badge bg-primary">In Progress</span>
+                {% elif ticket.status == "Resolved" %}
+                    <span class="badge bg-success">Resolved</span>
+                {% elif ticket.status == "Closed" %}
+                    <span class="badge bg-secondary">Closed</span>
+                {% else %}
+                    <span class="badge bg-light text-dark">{{ ticket.status }}</span>
+              {% endif %}
+      </td>
+      <td>{{ ticket.created_at }}</td>
+      <td>
+       <i class="fa-solid fa-pen-to-square text-success"
+            data-bs-toggle="modal"
+            data-bs-target="#assignTicketstatusModal"
+            data-ticket-id="{{ ticket.id }}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            data-bs-title="If you want to update Ticket Status">
+        </i>
+
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="9" class="text-muted">No assigned tickets found.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+  </div>
+
+<!-- Update status -->
+<div class="modal fade" id="assignTicketstatusModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">If you want to update {{ agent.agent_name }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <form method="post" id="statusUpdateForm" action="" >
+              {% csrf_token %}
+              <select name="status" class="form-select form-select-sm d-inline w-50 ms-2 " style="font-size: 20px;">
+                  <option value="Open" {% if ticket.status == "Open" %}selected{% endif %}>Open</option>
+                  <option value="In Progress" {% if ticket.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                  <option value="Resolved" {% if ticket.status == "Resolved" %}selected{% endif %}>Resolved</option>
+                  <option value="Closed" {% if ticket.status == "Closed" %}selected{% endif %}>Closed</option>
+              </select>
+              <button type="submit" class="btn btn-primary ms-4 ">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+ <div id="Ticket-history-content" class="content-section d-none">
+    <h3 class="text-center mt-4 mb-4" style="font-size: 40px; color: orangered;text-shadow: 2px 2px 4px orangered;">Tickets History</h3>
+
+    <table class="table table-bordered">
+    <thead class="table-dark text-center">
+        <tr>
+            <th>Title</th>
+            <th>User</th>
+            <th>Status</th>
+            <th>Category</th>
+            <th>Priority</th>
+            <th>Created At</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        {% for ticket in tickets %}
+        <tr>
+            <td >{{ ticket.title }}</td>
+            <td>{{ ticket.user.Emp_name }}</td>
+            <td>
+        {% if ticket.status == "Open" %}
+                    <span class="badge bg-warning text-dark">Open</span>
+                {% elif ticket.status == "In Progress" %}
+                    <span class="badge bg-primary">In Progress</span>
+                {% elif ticket.status == "Resolved" %}
+                    <span class="badge bg-success">Resolved</span>
+                {% elif ticket.status == "Closed" %}
+                    <span class="badge bg-secondary">Closed</span>
+                {% else %}
+                    <span class="badge bg-light text-dark">{{ ticket.status }}</span>
+              {% endif %}
+      </td>
+            <td>{{ ticket.category }}</td>
+            <td>  {% if ticket.priority|lower == 'low' %}
+            <span class="badge bg-secondary ">
+              Low
+            </span>
+            {% elif ticket.priority|lower == 'medium' %}
+              <span class="badge bg-primary text-dark ">
+                Medium
+              </span>
+            {% elif ticket.priority|lower == 'high' %}
+              <span class="badge bg-warning">
+                High
+              </span>
+            {% elif ticket.priority|lower == 'urgent' %}
+              <span class="badge bg-danger">
+                Urgent
+              </span>
+            {% else %}
+              <span class="badge bg-secondary">
+                <i class="fa-solid fa-question-circle me-1"></i> {{ ticket.priority }}
+              </span>
+            {% endif %}</td>
+            <td>{{ ticket.created_at|date:"d M Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="text-center">No ticket history found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+ </div>
+</main>
+</div>
+    
+<!-- footer -->
+ <!-- <footer class="bg-dark text-light pb-3 shadow-lg" style="padding-bottom: 1%;">
+    <hr class="border-light">
+    <p class="text-center mb-0 text-secondary">© 2025 HelpDesk. All rights reserved.</p>
+
+</footer> -->
+
+
+
+
+<!-- Messages Content -->
+{% if messages %}
+    {% for msg in messages %}
+        {% if msg.tags == 'success' %}
+        
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-success">
+              <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="successModalLabel">Welcome {{ user.Emp_id }}  </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body fs-4">
+                {{ msg }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        {% elif msg.tags == 'error' %}
+       
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-danger">
+              <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body fs-4">
+                {{ msg }}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+
+
+
+
+<script>
+  // Tooltip
+
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+  // === Bootstrap Modal Auto-show ===
+  const successModalEl = document.getElementById('successModal');
+  const errorModalEl = document.getElementById('errorModal');
+
+  if (successModalEl) {
+    const successModal = new bootstrap.Modal(successModalEl);
+    successModal.show();
+    setTimeout(() => successModal.hide(), 5000);
+  }
+
+  if (errorModalEl) {
+    const errorModal = new bootstrap.Modal(errorModalEl);
+    errorModal.show();
+    setTimeout(() => errorModal.hide(), 5000);
+  }});
+
+  // Sidebar
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const sidebarButtons = document.querySelectorAll(".sidebar-btn-custom");
+    const contentSections = document.querySelectorAll(".content-section");
+
+    sidebarButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        const targetId = button.getAttribute("data-target");
+
+        // Hide all sections
+        contentSections.forEach(section => {
+          section.classList.add("d-none");
+          section.classList.remove("fade-in");
+        });
+
+        // Remove active class from all buttons
+        sidebarButtons.forEach(btn => btn.classList.remove("active"));
+
+        // Show the clicked section
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+          targetSection.classList.remove("d-none");
+          targetSection.classList.add("fade-in");
+        }
+
+        // Add active class to clicked button
+        button.classList.add("active");
+      });
+    });
+
+    // Optionally auto-click the first button
+    if (sidebarButtons.length > 0) {
+      sidebarButtons[0].click();
+    }
+  });
+// logout 
+ window.addEventListener('unload', function () {
+  navigator.sendBeacon('/logout/');
+});
+
+// Stay on same section after page reload
+document.addEventListener("DOMContentLoaded", function () {
+  const currentSection = "{{ section|default:'' }}";
+  const reopenModal = "{{ reopen_modal|default:'' }}";
+
+  if (currentSection) {
+    const buttonToClick = document.querySelector(`.sidebar-btn-custom[data-target="${currentSection}-content"]`);
+    if (buttonToClick) buttonToClick.click();
+  }
+
+  if (reopenModal) {
+    const modal = new bootstrap.Modal(document.getElementById(reopenModal));
+    modal.show();
+  }
+});
+
+
+// Status  Update
+const statusModal = document.getElementById('assignTicketstatusModal');
+  statusModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const ticketId = button.getAttribute('data-ticket-id');
+    const form = document.getElementById('statusUpdateForm');
+    form.action = `/agent/update_ticket_status/${ticketId}/`;  
+  });
+</script>
+</body>
+</html>

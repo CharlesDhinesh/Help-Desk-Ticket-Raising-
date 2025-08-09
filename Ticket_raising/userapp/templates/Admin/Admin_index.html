@@ -1,0 +1,865 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpDesk || Admin</title>
+    <!-- <link rel="stylesheet" href="/Ticket_raising/userapp/static/css/Admin.css"> -->
+    <link rel="stylesheet" href="{% static 'css/Admin.css' %}"> 
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/png" >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Advent+Pro:ital,wght@0,100..900;1,100..900&family=Bebas+Neue&family=Cinzel:wght@400..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Liter&family=Merienda:wght@300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&family=Smooch+Sans:wght@100..900&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
+</head>
+<body class="merienda">
+    <div class="top-bar">
+        <span class="text-start fs-4"><img class="mb-3" src="{% static 'assets/HelpDesk_logo.png' %}" width="50" height="50" alt=""><span class="h2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Admin">
+          <i class="fa-solid fa-user-tie fs-1 ms-3 me-2"></i> {{ admin_name }} </span></span>
+        <span style="margin-left: 30%;font-size: 50px;font-weight: 700;">HelpDesk</span>
+
+
+       <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="out-form text-decoration-none p-2 bg-transparent border-0">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+          </button>
+      </form>
+
+        
+    </div>
+    <!-- <h1 class="container" style="margin-top: 2%;margin-left:40%;font-size: 80px; color: orangered;text-shadow: 2px 2px 4px orangered; "> Admin Dashboard</h1>
+     -->
+
+
+ <!-- Sidebar -->
+<div class="d-flex" >
+  <aside class="p-3 pt-5" style="width: 300px; height: 600px;border-right: 2px solid orangered;padding-top: 5%;">
+   <ul class="nav flex-column gap-3">
+    
+   <!-- <li class="nav-item mt-1" >
+    <button class="sidebar-btn-custom" style="font-size: 22px;padding: 8%;"  data-target="dashboard-content">
+      <i class="fa-solid fa-users"></i> Dashboard
+    </button>
+  </li> -->
+
+  <!-- Create User-------------------------------------------------------------------- -->
+  <li class="nav-item mt-1" >
+    
+    <button class="sidebar-btn-custom" style="font-size: 22px;padding: 8%;" data-target="create-user-content">
+      <i class="fa-solid fa-users"></i> Create User
+    </button>
+  </li>
+  <!-- Create Admin ------------------------------------------------------------------- -->
+  <li class="nav-item mt-2">
+    <button class= "sidebar-btn-custom" style="font-size: 22px;padding: 8%;"  data-target="create-admin-content">
+      <i class="fa-solid fa-user-plus"></i> Create Admin
+    </button>
+  </li>
+  <!-- Create agent---------------------------------------------------------------------- -->
+  <li class="nav-item mt-2"> 
+    <button class="sidebar-btn-custom" style="font-size: 22px;padding: 8%;" data-target="create-agent-content">
+     <i class="fa-solid fa-users-line"></i> Create Agent
+    </button>
+  </li>
+  <!-- Ticket Monitor ------------------------------------------------------------------- -->
+<li class="nav-item mt-2">
+  <div class="position-relative">
+    <button class="sidebar-btn-custom" style="font-size: 22px; padding: 8%;" data-target="ticket-monitor-content" onclick="markTicketsAsSeen()">
+        <i class="fa-solid fa-ticket me-2" style="transform: rotate(-30deg);"></i> Ticket Monitor
+          {% if unseen_ticket_count > 0 %}
+             <span id="ticket-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+      {{ unseen_ticket_count }}
+       </span>
+      {% endif %}
+    </button>
+  </div>
+</li>
+
+  <!-- Assign Tickets ------------------------------------------------------------------- -->
+  <!-- <li class="nav-item mt-2">
+    <button class="sidebar-btn-custom" style="font-size: 22px;padding: 8%;"  data-target="assign-tickets-content">
+      <i class="fa-solid fa-circle-check"></i> Assign Tickets
+    </button>
+  </li> -->
+  <!-- Feedback ------------------------------------------------------------------------ -->
+  <li class="nav-item mt-2">
+    <button type="button" class="sidebar-btn-custom" data-target="feedback-content" style="font-size: 22px;padding: 8%;">
+             
+        <i class="fa-solid fa-comments me-3"></i> Feedback
+    </button>
+  </li>
+</ul>
+  </aside>
+
+<main class="flex-grow-1 p-5 " >
+
+  <div id="dashboard-content" class="content-section">
+     <h3 class="text-center me-2 mb-4" style="font-size: 40px; color: orangered;text-shadow: 2px 2px 4px orangered; ">Dashboard</h3>
+    <p>This is the default content shown on load.</p>
+  </div>
+
+<!-- Create User--------------------------------------------------------------------------- -->
+
+<div id="create-user-content" class="content-section p-4 d-none overflow-auto">
+
+    <button type="button" class="but" style="width: 30%;" data-bs-toggle="modal" data-bs-target="#createuserss">
+              Create New User
+    </button>
+
+<!-- Modal -->
+    <div class="modal fade" id="createuserss"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content p-2" style="background-color: rgb(58, 1, 44) ;width: 500px;height: 620px;">
+          <div class="modal-header">
+             <h3 class="text-center " style="font-size: 40px; color: orangered;text-shadow: 2px 2px 4px orangered; ">Create New User</h3>
+           <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+      <div class="modal-body">
+         
+           <form method="post" action="{% url 'create_user' %}" class="w-100" >
+             {% csrf_token %}
+          <div class="form-floating mb-4">
+            <input type="text" id="username" name="Emp_name" class="form-control bg-body-tertiary rounded-2" placeholder="User Name" style="font-size: 18px;">
+            <label for="Emp_name">User Name</label>
+          </div>
+
+            <div class="form-floating mb-4">
+                <input type="number" id="userid" name="Emp_id" class="form-control bg-body-tertiary rounded-2" placeholder="User ID" data-bs-toggle="tooltip" data-bs-placement="right" title="Please give a unique ID" style="font-size: 18px;" required>
+                <label for="Emp_id">User ID</label>
+            </div>
+
+            <div class="form-floating mb-4">
+                <input type="number" id="systemid" name="Sys_id" class="form-control bg-body-tertiary rounded-2" placeholder="System ID" style="font-size: 18px;" required >
+                 <label for="Sys_id">System ID</label>
+            </div>
+
+              <div class="form-floating mb-4">
+                 <input type="email" id="usermail" name="emp_mail" class="form-control bg-body-tertiary rounded-2" placeholder="User Email" style="font-size: 18px;" required>
+                 <label for="emp_mail">User Email</label>
+              </div>
+
+               <div class="form-floating mb-4">
+                   <input type="password" id="password" name="password" class="form-control bg-body-tertiary rounded-2" placeholder="Password" style="font-size: 18px;">
+                   <label for="password">Password</label>
+               </div>
+
+              <button type="submit" id="createUserBtn" class="mt-4 but" style="margin-left: 25%;width: 45%;">
+                  <i class="fa-solid fa-user-plus but-icon"></i>
+                  <span class="but-name" >Create User</span>
+              </button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-2">
+  <table class="table table-hover table-striped table-bordered mt-4">
+    <thead class="table-dark text-center">
+      <tr>
+        <th scope="col">S.No</th>
+        <th>User Name</th>
+        <th>User ID</th>
+        <th>System ID</th>
+        <th>User Email</th>
+        <th>Password</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody id="userTableBody" class="table-group-divider border-dark text-center">
+      {% if all_users %}
+    {% for user in all_users %}
+      <tr class="table-active">
+        <td scope="row" class="border-dark">{{ forloop.counter }}</td>
+        <td class="border-dark">{{ user.Emp_name }}</td>
+        <td class="border-dark" >{{ user.Emp_id }}</td>
+        <td class="border-dark">{{ user.Sys_id }}</td>
+        <td class="border-dark">{{ user.Emp_email }}</td>
+        <td class="border-dark">••••••••</td>
+        <td>
+            <button class="btn" data-bs-toggle="modal" data-bs-target="#updateUserModal{{ user.id }}">
+                <i class="fa-solid fa-pen-to-square text-success"  data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Edit"></i>
+            </button>
+           <a href="{% url 'delete_user' user.id %}" onclick="return confirm('Are you sure you want to delete this user?')" class="btn">
+              <i class="fa-solid fa-trash text-danger" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Delete"></i>
+           </a>
+        </td>
+      </tr>
+             {% endfor %}
+      {% else %}
+       <tr>
+             <td colspan="7" class="text-center text-muted">No user created yet.</td>
+       </tr>
+       
+          {% endif %}
+    </tbody>
+  </table>
+
+
+  <!-- Modal -->
+   {% for user in all_users %}
+    <div class="modal fade" id="updateUserModal{{ user.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content p-2" style="background-color: rgb(58, 1, 44) ;width: 500px;height: 620px;">
+          <div class="modal-header">
+             <h3 class="text-center " style="font-size: 40px; color: orangered;text-shadow: 2px 2px 4px orangered; ">Update User</h3>
+           <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+      <div class="modal-body">
+         
+           <form method="post" action="{% url 'update_user' user.id %}" class="w-100" >
+             {% csrf_token %}
+  
+          <div class="form-floating mb-4">
+            <input type="text" id="username" name="Emp_name" class="form-control bg-body-tertiary rounded-2" value="{{ user.Emp_name }}" placeholder="User Name" style="font-size: 18px;">
+            <label for="Emp_name">User Name</label>
+          </div>
+
+            <div class="form-floating mb-4">
+                <input type="number" id="userid" name="Emp_id" class="form-control bg-body-tertiary rounded-2" value="{{ user.Emp_id }}" placeholder="User ID" data-bs-toggle="tooltip" data-bs-placement="right" title="Please give a unique ID" style="font-size: 18px;">
+                <label for="Emp_id">User ID</label>
+            </div>
+
+            <div class="form-floating mb-4">
+                <input type="number" id="systemid" name="Sys_id" class="form-control bg-body-tertiary rounded-2" value="{{ user.Sys_id }}" placeholder="System ID" style="font-size: 18px;">
+                 <label for="Sys_id">System ID</label>
+            </div>
+
+              <div class="form-floating mb-4">
+                 <input type="email" id="usermail" name="emp_mail" class="form-control bg-body-tertiary rounded-2" value="{{ user.Emp_email }}" placeholder="User Email" style="font-size: 18px;">
+                 <label for="emp_mail">User Email</label>
+              </div>
+
+               <div class="form-floating mb-4">
+                   <input type="password" id="password" name="password" class="form-control bg-body-tertiary rounded-2" placeholder="New Password" style="font-size: 18px;">
+                   <label for="password">Password</label>
+               </div>
+
+              <button type="submit" id="createUserBtn" class="mt-4 but" style="margin-left: 25%;width: 45%;">
+                  <i class="fa-solid fa-pen-to-square but-icon"></i>
+                  <span class="but-name" >Update User</span>
+              </button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+</div>
+
+
+<!-- Create admin Content -------------------------------------------------------------------------------------------- -->
+<div id="create-admin-content" class="content-section d-none">
+   <button type="button" class="but" style="width: 30%;" data-bs-toggle="modal" data-bs-target="#createadmin">
+              Create New Admin
+    </button>
+
+<!-- Modal -->
+    <div class="modal fade" id="createadmin"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content p-2" style="background-color: rgb(58, 1, 44) ;">
+          <div class="modal-header">
+             <h3 class="text-center " style="font-size: 40px; color: orangered;text-shadow: 2px 2px 4px orangered; ">Create New Admin</h3>
+           <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+      <div class="modal-body">
+         
+          <form method="post" action="{% url 'admin_sign_up' %}" class="w-100">
+             {% csrf_token %}
+             <input type="hidden" name="section" value="create_user">
+             <input type="hidden" name="reopen_modal" value="createuserss">
+                      <!-- Admin Name -->
+                <div class="form-floating mb-4">
+                  <input type="text" id="adminName" name="admin_name" class="form-control bg-body-tertiary rounded-2" placeholder="Admin Name" style="font-size: 18px;">
+                  <label for="adminName">Admin Name</label>
+                </div>
+
+                <!-- Admin Email -->
+                <div class="form-floating mb-4">
+                  <input type="email" id="adminMail" name="admin_mail" class="form-control bg-body-tertiary rounded-2" placeholder="Admin Email" style="font-size: 18px;">
+                  <label for="adminMail">Admin Email</label>
+                </div>
+
+                <!-- Password -->
+                <div class="form-floating mb-4">
+                  <input type="password" id="adminPass" name="password" class="form-control bg-body-tertiary rounded-2" placeholder="Password" style="font-size: 18px;">
+                  <label for="adminPass">Password</label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="mt-4 but " style="margin-left: 25%;">
+                  <i class="fa-solid fa-user-plus but-icon"></i>
+                  <span class="but-name" >Create Admin</span>
+                </button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="container mt-2">
+      <table class="table table-hover table-striped table-bordered mt-4">
+        <thead class="table-dark text-center">
+            <tr>
+              <th scope="col">S.No</th>
+              <th>Admin Name</th>
+              <th>Admin Email</th>
+              <th>Admin Password</th>
+              <th>Edit</th>
+            </tr>
+        </thead>
+          {% if all_admins %}
+              {% for admin in all_admins %}
+              <tbody id="userTableBody" class="table-group-divider border-dark text-center">
+              
+                <tr class="table-active ">
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ admin.admin_name }}</td>
+                  <td>{{ admin.admin_mail }}</td>
+                  <td>••••••••</td>
+                  <td>
+                      <button class="btn" data-bs-toggle="modal" data-bs-target="#updateAdminModal{{ admin.id }}">
+                          <i class="fa-solid fa-pen-to-square text-success" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Edit"></i>
+                      </button>
+                    <a href="{% url 'delete_admin' admin.id %}" onclick="return confirm('Are you sure you want to delete this admin?')" class="btn">
+                      <i class="fa-solid fa-trash text-danger" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Delete"></i>
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="5" class="text-center text-muted">No admin created yet.</td>
+              </tr>
+            {% endif %}
+              </tbody>
+      </table>
+    
+    
+  <!-- Modal -->
+   {% for admin in all_admins %}
+    <div class="modal fade" id="updateAdminModal{{ admin.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content p-2" style="background-color: rgb(58, 1, 44) ;width: 500px;height: 620px;">
+          <div class="modal-header">
+             <h3 class="text-center " style="font-size: 40px; color: orangered;text-shadow: 2px 2px 4px orangered; ">Update Admin</h3>
+           <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+      <div class="modal-body">
+         
+          <form method="post" action="{% url 'update_admin' admin.id %}" class="w-100">
+             {% csrf_token %}
+                      <!-- Admin Name -->
+                <div class="form-floating mb-4">
+                  <input type="text" id="adminName" name="admin_name" class="form-control bg-body-tertiary rounded-2" value="{{ admin.admin_name }}" placeholder="Admin Name" style="font-size: 18px;">
+                  <label for="adminName">Admin Name</label>
+                </div>
+
+                <!-- Admin Email -->
+                <div class="form-floating mb-4">
+                  <input type="email" id="adminMail" name="admin_mail" class="form-control bg-body-tertiary rounded-2" value="{{ admin.admin_mail }}" placeholder="Admin Email" style="font-size: 18px;">
+                  <label for="adminMail">Admin Email</label>
+                </div>
+
+                <!-- Password -->
+                <div class="form-floating mb-4">
+                  <input type="password" id="adminPass" name="password" class="form-control bg-body-tertiary rounded-2" value="{{ admin.password }}" placeholder="Password" style="font-size: 18px;">
+                  <label for="adminPass">Password</label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="mt-4 but " style="margin-left: 25%;width: 45%;">
+                  <i class="fa-solid fa-user-plus but-icon"></i>
+                  <span class="but-name" >Create Admin</span>
+                </button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+</div>
+
+<!-- Agent-Content -------------------------------------------------------------------------- -->
+  <div id="create-agent-content" class="content-section d-none">
+    <h3 class="text-center me-2 mb-4 " style="font-size: 40px; color: orangered;text-shadow: 2px 2px 4px orangered; ">Create New Agent</h3>
+     <button type="button" class="but" style="width: 30%;" data-bs-toggle="modal" data-bs-target="#createagent">
+              Create New Agent
+    </button>
+
+<!-- Modal -->
+    <div class="modal fade" id="createagent"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content p-2" style="background-color: rgb(58, 1, 44) ;width: 500px;height: 620px;">
+          <div class="modal-header">
+             <h3 class="text-center " style="font-size: 40px; color: orangered;text-shadow: 2px 2px 4px orangered; ">Create New User</h3>
+           <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+      <div class="modal-body">
+         
+          <form method="post" action="{% url 'create_agent' %}" class="w-100">
+             {% csrf_token %}
+             <input type="hidden" name="section" value="create_user">
+             <input type="hidden" name="reopen_modal" value="createuserss">
+                      <!-- Agent Name -->
+                <div class="form-floating mb-4">
+                  <input type="text" id="agentName" name="agent_name" class="form-control bg-body-tertiary rounded-2" placeholder="Agent Name" style="font-size: 18px;">
+                  <label for="agentName">Agent Name</label>
+                </div>
+                  <!-- Agent id -->
+                <div class="form-floating mb-4">
+                  <input type="text" id="agentid" name="agent_id" required class="form-control bg-body-tertiary rounded-2" placeholder="Agent id" style="font-size: 18px;">
+                  <label for="agentid">Agent ID</label>
+                </div>
+
+
+                <!-- Agent Email -->
+                <div class="form-floating mb-4">
+                  <input type="email" id="agentMail" name="agent_mail" required class="form-control bg-body-tertiary rounded-2" placeholder="Agent Email" style="font-size: 18px;">
+                  <label for="agentMail">Agent Email</label>
+                </div>
+
+                <!-- Password -->
+                <div class="form-floating mb-4">
+                  <input type="password" id="agentPass" name="password" class="form-control bg-body-tertiary rounded-2" placeholder="Password" style="font-size: 18px;">
+                  <label for="agentPass">Password</label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="mt-4 but " style="margin-left: 25%;width: 45%;" >
+                  <i class="fa-solid fa-user-plus but-icon"></i>
+                  <span class="but-name" >Create Agent</span>
+                </button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="container mt-2">
+      <table class="table table-hover table-striped table-bordered mt-4">
+        <thead class="table-dark text-center">
+            <tr>
+              <th scope="col">S.No</th>
+              <th>Agent Name</th>
+              <th>Agent id</th>
+              <th>Agent Email</th>
+              <th>Agent Password</th>
+              <th>Edit</th>
+            </tr>
+        </thead>
+              <tbody id="userTableBody" class="table-group-divider border-dark text-center">
+                {% if all_agents %}
+              {% for agent in all_agents %}
+                <tr class="table-active">
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ agent.agent_name }}</td>
+                  <td>{{ agent.agent_id }}</td>
+                  <td>{{ agent.agent_mail }}</td>
+                  <td>••••••••</td>
+                  <td>
+                      <button class="btn" data-bs-toggle="modal" data-bs-target="#updateAgentModal{{ agent.id }}">
+                          <i class="fa-solid fa-pen-to-square text-success" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Edit"></i>
+                      </button>
+                    <a href="{% url 'delete_agent' agent.id %}" onclick="return confirm('Are you sure you want to delete this admin?')" class="btn">
+                      <i class="fa-solid fa-trash text-danger" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Delete"></i>
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="6" class="text-center text-muted">No admin created yet.</td>
+              </tr>
+            {% endif %}
+              </tbody>
+      </table>
+  <!-- Modal -->
+   {% for agent in all_agents %}
+    <div class="modal fade" id="updateAgentModal{{ agent.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content p-2" style="background-color: rgb(58, 1, 44) ;width: 500px;height: 620px;">
+          <div class="modal-header">
+             <h3 class="text-center " style="font-size: 40px; color: orangered;text-shadow: 2px 2px 4px orangered; ">Update Agent</h3>
+           <button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+      <div class="modal-body">
+         
+           <form method="post" action="{% url 'update_agent' agent.id %}" class="w-100">
+             {% csrf_token %}
+                      <!-- Agent Name -->
+                <div class="form-floating mb-4">
+                  <input type="text" id="agentName" name="agent_name" value="{{ agent.agent_name }}" class="form-control bg-body-tertiary rounded-2" placeholder="Agent Name" style="font-size: 18px;">
+                  <label for="agentName">Agent Name</label>
+                </div>
+                  <!-- Agent id -->
+                <div class="form-floating mb-4">
+                  <input type="text" id="agentid" name="agent_id" value="{{ agent.agent_id }}"  class="form-control bg-body-tertiary rounded-2" placeholder="Agent id" style="font-size: 18px;">
+                  <label for="agentid">Agent ID</label>
+                </div>
+
+
+                <!-- Agent Email -->
+                <div class="form-floating mb-4">
+                  <input type="email" id="agentMail" name="agent_mail" value="{{ agent.agent_mail }}" class="form-control bg-body-tertiary rounded-2" placeholder="Agent Email" style="font-size: 18px;">
+                  <label for="agentMail">Agent Email</label>
+                </div>
+
+                <!-- Password -->
+                <div class="form-floating mb-4">
+                  <input type="password" id="agentPass" name="password" class="form-control bg-body-tertiary rounded-2" placeholder="Password" style="font-size: 18px;">
+                  <label for="agentPass">Password</label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="mt-4 but " style="margin-left: 25%;width: 45%;">
+                  <i class="fa-solid fa-user-plus but-icon"></i>
+                  <span class="but-name" >Update agent</span>
+                </button>
+          </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+</div>
+
+  <div id="ticket-monitor-content" class="content-section d-none">
+   <h3 class="text-center " style="font-size: 40px; color: orangered;text-shadow: 2px 2px 4px orangered; ">Tickets raised</h3>
+  
+    <table class="table table-bordered text-center">
+      <thead class="table-dark">
+        <tr>
+          <th>S.No</th>
+          <th>Title</th>
+          <th>Raised By</th>
+          <th>Status</th>
+          <th>Assigned Agent</th>
+          <th>Category</th>
+          <th>Created At</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+       <tbody class="table-group-divider border-dark text-center">
+  {% if tickets %}
+    {% for ticket in tickets %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ ticket.title }}</td>
+      <td>{{ ticket.user.Emp_name }}</td>
+      <td>
+        {% if ticket.status == "Open" %}
+                    <span class="badge bg-warning text-dark">Open</span>
+                {% elif ticket.status == "In Progress" %}
+                    <span class="badge bg-primary">In Progress</span>
+                {% elif ticket.status == "Resolved" %}
+                    <span class="badge bg-success">Resolved</span>
+                {% elif ticket.status == "Closed" %}
+                    <span class="badge bg-secondary">Closed</span>
+                {% else %}
+                    <span class="badge bg-light text-dark">{{ ticket.status }}</span>
+              {% endif %}
+      </td>
+      <td>{{ ticket.assigned_agent.agent_name|default:"Unassigned" }}</td>
+      <td>{{ ticket.category }}</td>
+      <td>{{ ticket.created_at }}</td>
+
+      {% if  ticket.status == "Closed" %}
+      <td> 
+        <button type="button" disabled class="btn btn-success assign-btn" data-ticket-id="{{ ticket.id }}" data-bs-toggle="modal" data-bs-target="#assignTicketModal">
+          Assign
+         </button>
+    </td>
+    {% else %}
+     <td> 
+        <button type="button" class="btn btn-success assign-btn" data-ticket-id="{{ ticket.id }}" data-bs-toggle="modal" data-bs-target="#assignTicketModal">
+          Assign
+         </button>
+    </td>
+    {% endif %}
+    </tr>
+    {% endfor %}
+  {% else %}
+    <tr>
+      <td colspan="8" class="text-muted">No tickets found.</td>
+    </tr>
+  {% endif %}
+</tbody>
+    </table>
+</div>
+
+
+<!-- Assign Ticket Modal -->
+<div class="modal fade" id="assignTicketModal" tabindex="-1" aria-labelledby="assignTicketModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" id="assignTicketForm">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="assignTicketModalLabel">Assign Ticket</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label for="agent">Select Agent:</label>
+          <select name="agent_id" class="form-control mb-3" required>
+            {% for agent in all_agents %}
+              <option value="{{ agent.id }}">{{ agent.agent_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Assign Agent</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+ <div id="feedback-content" class="content-section">
+  <h3 class="text-center" style="font-size: 40px; color: orangered;text-shadow: 2px 2px 4px orangered; ">Feedback</h3>
+  <table class="table table-bordered mt-4">
+    <thead class="table-dark text-center">
+      <tr>
+        <th>S.No</th>
+        <th>User</th>
+        <th>Rating</th>
+        <th>Comment</th>
+        <th>Submitted At</th>
+      </tr>
+    </thead>
+    <tbody class="text-center border-dark">
+      {% for f in feedbacks %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ f.user.Emp_name }}</td>
+          <td>
+            {% if f.rating == 5 %}
+              <span class="badge bg-success">★ {{ f.rating }}</span>
+            {% elif f.rating == 4 %}
+              <span class="badge bg-primary">★ {{ f.rating }}</span>
+            {% elif f.rating == 3 %}
+              <span class="badge bg-warning text-dark">★ {{ f.rating }}</span>
+            {% elif f.rating == 2 %}
+              <span class="badge bg-info text-dark">★ {{ f.rating }}</span>
+            {% elif f.rating == 1 %}
+              <span class="badge bg-danger">★ {{ f.rating }}</span>
+            {% else %}
+              <span class="badge bg-secondary">No Rating</span>
+            {% endif %}
+          </td>
+
+          <td>{{ f.comment }}</td>
+          <td>{{ f.created_at|date:"M d, Y h:i A" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">No feedback submitted yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+</main>
+</div>
+
+
+
+
+
+
+<!-- <footer class="bg-dark text-light  shadow-lg">
+    <hr class="border-light">
+    <p class="text-center mb-0 text-secondary">© 2025 HelpDesk. All rights reserved.</p>
+
+</footer> -->
+
+
+
+
+
+<!-- Messages Content -->
+{% if messages %}
+    {% for msg in messages %}
+        {% if msg.tags == 'success' %}
+        
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-success">
+              <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="successModalLabel">Success {{ admin_name }}  </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body fs-4">
+                {{ msg }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        {% elif msg.tags == 'error' %}
+       
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-danger">
+              <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body fs-4">
+                {{ msg }}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+
+<script>
+  // Tooltip
+
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+  // === Bootstrap Modal Auto-show ===
+  const successModalEl = document.getElementById('successModal');
+  const errorModalEl = document.getElementById('errorModal');
+
+  if (successModalEl) {
+    const successModal = new bootstrap.Modal(successModalEl);
+    successModal.show();
+    setTimeout(() => successModal.hide(), 5000);
+  }
+
+  if (errorModalEl) {
+    const errorModal = new bootstrap.Modal(errorModalEl);
+    errorModal.show();
+    setTimeout(() => errorModal.hide(), 5000);
+  }});
+// display none content
+  document.addEventListener("DOMContentLoaded", 
+  function () {
+    const sidebarButtons = document.querySelectorAll(".sidebar-btn-custom");
+    const contentSections = document.querySelectorAll(".content-section");
+
+    sidebarButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        const targetId = button.getAttribute("data-target");
+
+        // Hide all sections
+        contentSections.forEach(section => {
+          section.classList.add("d-none");
+          section.classList.remove("fade-in");
+        });
+
+        // Remove active class from all buttons
+        sidebarButtons.forEach(btn => btn.classList.remove("active"));
+
+        // Show the clicked section
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+          targetSection.classList.remove("d-none");
+          targetSection.classList.add("fade-in");
+        }
+
+        // Add active class to clicked button
+        button.classList.add("active");
+      });
+    });
+
+    // Optionally auto-click the first button
+    if (sidebarButtons.length > 0) {
+      sidebarButtons[0].click();
+    }
+  });
+// logout 
+ window.addEventListener('unload', function () {
+  navigator.sendBeacon('/logout/');
+});
+
+// Stay on same section after page reload
+document.addEventListener("DOMContentLoaded", function () {
+  const currentSection = "{{ section|default:'' }}";
+  const reopenModal = "{{ reopen_modal|default:'' }}";
+
+  if (currentSection) {
+    const buttonToClick = document.querySelector(`.sidebar-btn-custom[data-target="${currentSection}-content"]`);
+    if (buttonToClick) buttonToClick.click();
+  }
+
+  if (reopenModal) {
+    const modal = new bootstrap.Modal(document.getElementById(reopenModal));
+    modal.show();
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const section = "{{ section|escapejs }}";
+
+    if (section === "assign_ticket") {
+      document.getElementById("assign-tickets-content").classList.remove("d-none");
+      document.getElementById("ticket-monitor-content").classList.add("d-none");
+    } else if (section === "ticket_monitering") {
+      document.getElementById("ticket-monitor-content").classList.remove("d-none");
+    }
+    // You can add more `else if` blocks if you have other sections
+  });
+
+// Show Tickets
+function markTicketsAsSeen() {
+  fetch("{% url 'mark_tickets_seen' %}", {
+    method: "POST",
+    headers: {
+      'X-CSRFToken': '{{ csrf_token }}',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === "success") {
+      const badge = document.getElementById("ticket-badge");
+      if (badge) {
+        badge.style.display = "none";  // Hide the badge
+      }
+    }
+  });
+}
+
+
+
+// Form action assign automatically
+
+ document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.assign-btn');
+    const form = document.getElementById('assignTicketForm');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', function () {
+        const ticketId = this.getAttribute('data-ticket-id');
+        const actionUrl = `/admin/assign-ticket/${ticketId}/`;
+        form.setAttribute('action', actionUrl);
+      });
+    });
+  });
+
+
+
+
+  
+</script>
+</body>
+</html>
