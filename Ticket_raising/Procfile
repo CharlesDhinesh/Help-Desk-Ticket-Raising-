@@ -1,1 +1,1 @@
-web: gunicorn Ticket_raising.wsgi
+web: gunicorn Ticket_raising.wsgi:application
